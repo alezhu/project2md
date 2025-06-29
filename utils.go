@@ -89,3 +89,15 @@ func pathExists(path string) (bool, error) {
 	}
 	return false, err // другая ошибка
 }
+func mergeMap[K comparable, V any](dst *map[K]V, src map[K]V) {
+	if len(src) == 0 {
+		return
+	}
+	if len(*dst) > 0 {
+		*dst = src
+		return
+	}
+	for k, v := range src {
+		(*dst)[k] = v
+	}
+}

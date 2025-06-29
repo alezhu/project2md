@@ -220,55 +220,11 @@ func loadCustomConfig(config Config, configPath string) (Config, error) {
 	}
 
 	// Apply overrides
-	if len(customConfig.CodeExtensions) > 0 {
-		if config.CodeExtensions == nil || len(config.CodeExtensions) == 0 {
-			config.CodeExtensions = customConfig.CodeExtensions
-		} else {
-			for ext, enabled := range customConfig.CodeExtensions {
-				config.CodeExtensions[ext] = enabled
-			}
-		}
-	}
-
-	if len(customConfig.SkipDirs) > 0 {
-		if config.SkipDirs == nil || len(config.SkipDirs) == 0 {
-			config.SkipDirs = customConfig.SkipDirs
-		} else {
-			for dir, skip := range customConfig.SkipDirs {
-				config.SkipDirs[dir] = skip
-			}
-		}
-	}
-
-	if len(customConfig.Languages) > 0 {
-		if config.Languages == nil || len(config.Languages) == 0 {
-			config.Languages = customConfig.Languages
-		} else {
-			for ext, lang := range customConfig.Languages {
-				config.Languages[ext] = lang
-			}
-		}
-	}
-
-	if len(customConfig.Exclude) > 0 {
-		if config.Exclude == nil || len(config.Exclude) == 0 {
-			config.Exclude = customConfig.Exclude
-		} else {
-			for patt := range customConfig.Exclude {
-				config.Exclude[patt] = struct{}{}
-			}
-		}
-	}
-
-	if len(customConfig.Include) > 0 {
-		if config.Include == nil || len(config.Include) == 0 {
-			config.Include = customConfig.Include
-		} else {
-			for patt := range customConfig.Include {
-				config.Include[patt] = struct{}{}
-			}
-		}
-	}
+	mergeMap(&config.CodeExtensions, customConfig.CodeExtensions)
+	mergeMap(&config.SkipDirs, customConfig.SkipDirs)
+	mergeMap(&config.Languages, customConfig.Languages)
+	mergeMap(&config.Exclude, customConfig.Exclude)
+	mergeMap(&config.Include, customConfig.Include)
 
 	return config, nil
 }
