@@ -114,7 +114,8 @@ func main() {
 	}
 
 	// Process project
-	if err := processProject(absPath, config, customConfig, *outputFileName, *verbose, *showStats, *noGit); err != nil {
+	processor := NewProcessor(absPath, config, customConfig, *outputFileName, *verbose, *showStats, *noGit)
+	if err := processor.Process(); err != nil {
 		log.Fatalf("Error processing project: %v", err)
 	}
 }
