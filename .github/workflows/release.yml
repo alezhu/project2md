@@ -87,7 +87,7 @@ jobs:
           cd dist
           if [ "${{ matrix.goos }}" = "windows" ]; then
             zip "${ARCH_NAME}.zip" "${BINARY_NAME}"
-            echo "ASSET_NAME="${ARCH_NAME}.zip" >> $GITHUB_ENV
+            echo "ASSET_NAME=${ARCH_NAME}.zip" >> $GITHUB_ENV
           else
             tar -czf "${ARCH_NAME}.tar.gz" "${BINARY_NAME}"
             echo "ASSET_NAME=${ARCH_NAME}.tar.gz" >> $GITHUB_ENV
