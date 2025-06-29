@@ -173,7 +173,7 @@ jobs:
           echo "RELEASE_NOTES_FILE=release_notes.md" >> $GITHUB_ENV
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           name: Project2MD ${{ github.ref_name }}
