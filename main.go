@@ -17,7 +17,9 @@ func exportDefaultConfig(configPath string) error {
 	if err != nil {
 		return fmt.Errorf("failed to create config file: %w", err)
 	}
-	defer file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 
 	encoder := json.NewEncoder(file)
 	encoder.SetIndent("", "  ")
@@ -106,11 +108,17 @@ func main() {
 	if exists {
 		fmt.Printf("Using project configuration: %s\n", projectConfigPath)
 		customConfig, err = loadCustomConfig(customConfig, projectConfigPath)
+		if err != nil {
+			log.Fatalf("Error using project configuration: %v", err)
+		}
 	}
 
 	if *userConfigPath != "" {
-		customConfig, err = loadCustomConfig(customConfig, *userConfigPath)
 		fmt.Printf("Using custom configuration: %s\n", *userConfigPath)
+		customConfig, err = loadCustomConfig(customConfig, *userConfigPath)
+		if err != nil {
+			log.Fatalf("Error using custom configuration: %v", err)
+		}
 	}
 
 	// Process project

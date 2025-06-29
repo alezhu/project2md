@@ -211,7 +211,9 @@ func loadCustomConfig(config Config, configPath string) (Config, error) {
 	if err != nil {
 		return config, fmt.Errorf("failed to open config file: %w", err)
 	}
-	defer file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 
 	var customConfig Config
 	decoder := json.NewDecoder(file)

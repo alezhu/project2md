@@ -9,7 +9,7 @@ A command-line tool that automatically generates markdown archives of source cod
 - 🎯 **Configurable Filtering**: Extensive configuration options for include/exclude patterns
 - 🔍 **Git Integration**: Respects `.gitignore` files automatically
 - 📊 **Statistics**: Optional file size and processing statistics
-- 🎨 **Syntax Highlighting**: Proper language detection for markdown code blocks
+- 🎨 **Syntax Highlighting**: Proper language detection for Markdown code blocks
 - ⚙️ **Flexible Configuration**: JSON-based configuration with project-level overrides
 - 📝 **Clean Output**: Well-formatted markdown with file organization
 

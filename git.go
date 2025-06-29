@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -50,11 +51,11 @@ func parseGitIgnorePattern(line, basePath string) *GitIgnorePattern {
 }
 
 // Load .gitignore files recursively
-func loadGitIgnore(rootPath string) *GitIgnore {
+func loadGitIgnore(rootPath string) (*GitIgnore, error) {
 	gi := &GitIgnore{}
 
 	// Walk through all directories and load .gitignore files
-	filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return nil
 		}
@@ -64,7 +65,9 @@ func loadGitIgnore(rootPath string) *GitIgnore {
 			if err != nil {
 				return nil
 			}
-			defer file.Close()
+			defer func() {
+				_ = file.Close()
+			}()
 
 			basePath := filepath.Dir(path)
 			scanner := bufio.NewScanner(file)
@@ -76,8 +79,11 @@ func loadGitIgnore(rootPath string) *GitIgnore {
 		}
 		return nil
 	})
+	if err != nil {
+		return nil, fmt.Errorf("error walking directory: %w", err)
+	}
 
-	return gi
+	return gi, nil
 }
 
 // Check if path matches a gitignore pattern
