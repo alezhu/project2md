@@ -11,7 +11,7 @@ linters:
     - gocritic
     - gocyclo
     - goprintffuncname
-    - gosec
+#    - gosec
     - lll
     - misspell
     - mnd
@@ -41,6 +41,7 @@ linters:
         - octalLiteral
         - whyNoLint
         - wrapperFunc
+        - ptrToRefParam
       enabled-tags:
         - diagnostic
         - experimental

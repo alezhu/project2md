@@ -20,15 +20,15 @@ func matchGlob(pattern, name string) bool {
 }
 
 func matchGlobRecursive(pattern, name string) bool {
-	for len(pattern) > 0 {
+	for pattern != "" {
 		switch pattern[0] {
 		case '*':
 			// Skip consecutive asterisks
-			for len(pattern) > 0 && pattern[0] == '*' {
+			for pattern != "" && pattern[0] == '*' {
 				pattern = pattern[1:]
 			}
 
-			if len(pattern) == 0 {
+			if (pattern) == "" {
 				return true
 			}
 
@@ -41,14 +41,14 @@ func matchGlobRecursive(pattern, name string) bool {
 			return false
 
 		case '?':
-			if len(name) == 0 {
+			if (name) == "" {
 				return false
 			}
 			pattern = pattern[1:]
 			name = name[1:]
 
 		default:
-			if len(name) == 0 || pattern[0] != name[0] {
+			if (name) == "" || pattern[0] != name[0] {
 				return false
 			}
 			pattern = pattern[1:]
@@ -56,7 +56,7 @@ func matchGlobRecursive(pattern, name string) bool {
 		}
 	}
 
-	return len(name) == 0
+	return (name) == ""
 }
 
 // Format file size in human-readable format
@@ -93,7 +93,7 @@ func mergeMap[K comparable, V any](dst *map[K]V, src map[K]V) {
 	if len(src) == 0 {
 		return
 	}
-	if len(*dst) > 0 {
+	if len(*dst) == 0 {
 		*dst = src
 		return
 	}

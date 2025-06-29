@@ -54,11 +54,7 @@ func NewProcessor(
 }
 
 // Check if file should be processed as source code
-func isCodeFile(filename string, config Config) (bool, bool) {
-	var (
-		result bool
-		exists bool
-	)
+func isCodeFile(filename string, config Config) (result, exists bool) {
 	ext := strings.ToLower(filepath.Ext(filename))
 	if ext == "" {
 		// Check files without extension
@@ -72,8 +68,8 @@ func isCodeFile(filename string, config Config) (bool, bool) {
 }
 
 // Check if directory should be skipped
-func shouldSkipDir(dirname string, config Config) (bool, bool) {
-	result, exists := config.SkipDirs[strings.ToLower(dirname)]
+func shouldSkipDir(dirname string, config Config) (result, exists bool) {
+	result, exists = config.SkipDirs[strings.ToLower(dirname)]
 	return result, exists
 }
 
@@ -101,7 +97,7 @@ func shouldProcessFile(filename string, config Config) int {
 	if filepath.Separator == '\\' {
 		filename = strings.ToLower(filename)
 	}
-	//White list has more priority
+	// White list has more priority
 	if isFilenameInFileSet(filename, config.Include) {
 		return 1
 	}
@@ -368,13 +364,13 @@ func (p *Processor) checkFileShouldBeProcessed(path string, info os.FileInfo) er
 	filePath := info.Name()
 	relPath, _ := filepath.Rel(p.projectPath, path)
 	shouldProcess := shouldProcessFile(relPath, p.customConfig)
-	switch {
-	case shouldProcess == -1:
+	switch shouldProcess {
+	case -1:
 		return nil
-	case shouldProcess == 0:
+	case 0:
 		isCode, exists := isCodeFile(filePath, p.customConfig)
 		if !isCode && exists {
-			//If file explicit excluded in custom config, then skip file
+			// If file explicit excluded in custom config, then skip file
 			if p.verbose {
 				fmt.Printf("Ignored by custom config: %s\n", filePath)
 			}
@@ -387,12 +383,13 @@ func (p *Processor) checkFileShouldBeProcessed(path string, info os.FileInfo) er
 			return nil
 		}
 		shouldProcess = shouldProcessFile(relPath, p.defaultConfig)
-		if shouldProcess == -1 {
+		switch shouldProcess {
+		case -1:
 			if p.verbose {
 				fmt.Printf("Ignored by default config: %s\n", filePath)
 			}
 			return nil
-		} else if shouldProcess == 0 {
+		case 0:
 			if !isCode {
 				isCode, _ = isCodeFile(filePath, p.defaultConfig)
 			}
@@ -409,18 +406,18 @@ func (p *Processor) checkFileShouldBeProcessed(path string, info os.FileInfo) er
 }
 
 func (p *Processor) checkDirAllowed(path string, info os.FileInfo) error {
-	//Check customConfig first
+	// Check customConfig first
 	skip, exists := shouldSkipDir(info.Name(), p.customConfig)
 
 	if skip {
-		//If dir is explicitly skipped in custom config then skip this dir
+		// If dir is explicitly skipped in custom config then skip this dir
 		if p.verbose {
 			fmt.Printf("Ignored by custom config: %s\n", path)
 		}
 		return filepath.SkipDir
 	} else {
 		if exists {
-			//If dir is explicitly excluded from skip-dir-list in custom config then Process this dir
+			// If dir is explicitly excluded from skip-dir-list in custom config then Process this dir
 		} else {
 			// Check .gitignore
 			if !p.noGit && p.gitIgnore.isMatchPattern(path, true) {
@@ -430,7 +427,7 @@ func (p *Processor) checkDirAllowed(path string, info os.FileInfo) error {
 				p.stats.SkippedDirs++
 				return filepath.SkipDir
 			}
-			//Check defaultConfig
+			// Check defaultConfig
 			if skip, _ = shouldSkipDir(info.Name(), p.defaultConfig); skip {
 				if p.verbose {
 					fmt.Printf("Skipping directory: %s\n", path)
